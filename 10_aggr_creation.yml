@@ -1,0 +1,19 @@
+- hosts: localhost
+  name: ONTAP
+  gather_facts: false
+  collections:
+    - netapp.ontap
+  tasks:
+  - name: "Create AGGR {{ aggr_name }}"
+    na_ontap_aggregate:
+      state: present
+      name: "{{ aggr_name }}"
+      service_state: online
+      disk_count: "{{ count }}"
+      wait_for_online: True
+      time_out: 300
+      hostname: "{{ cluster }}"
+      username: "{{ netapp_username }}"
+      password: "{{ netapp_password }}"
+      https: true
+      validate_certs: false

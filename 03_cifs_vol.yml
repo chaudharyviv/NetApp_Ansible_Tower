@@ -1,0 +1,35 @@
+- hosts: localhost
+  name: ONTAP
+  gather_facts: false
+  collections:
+    - netapp.ontap
+  tasks:
+  - name: "Create Volume {{ volname }}"
+    na_ontap_volume:
+      state: present
+      name: "{{ volname }}"
+      size: "{{ volsize }}"
+      size_unit: "gb"
+      space_guarantee: none
+      aggregate_name: "{{ aggrname }}"
+      vserver: "{{ src_svm }}"
+      junction_path: "/{{ volname }}"
+      volume_security_style: ntfs
+      hostname: "{{ src_cluster }}"
+      username: "{{ netapp_username }}"
+      password: "{{ netapp_password }}"
+      https: true
+      validate_certs: false
+  - name: "Create CIFS share {{ src_lifaddress }} \\ {{ volname }}"
+    na_ontap_cifs:
+      state: present
+      share_name: "{{ volname }}"
+      path: "/{{ volname }}"
+      vserver: "{{ src_svm }}"
+      symlink_properties: read_only,enable
+      hostname: "{{ src_cluster }}"
+      username: "{{ netapp_username }}"
+      password: "{{ netapp_password }}"
+      https: true
+      validate_certs: false
+

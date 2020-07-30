@@ -1,0 +1,29 @@
+- hosts: localhost
+  name: ONTAP
+  gather_facts: false
+  collections:
+    - netapp.ontap
+  tasks:
+  - name: "Manage AGGR {{ aggr_name }}"
+    na_ontap_aggregate:
+      state: present
+      name: "{{ aggr_name }}"
+      service_state: offline
+      unmount_volumes: true
+      disk_count: "{{ count }}"
+      hostname: "{{ cluster }}"
+      username: "{{ netapp_username }}"
+      password: "{{ netapp_password }}"
+      https: true
+      validate_certs: false
+  - name: "Delete AGGR {{ aggr_name }}"
+    na_ontap_aggregate:
+      state: absent
+      service_state: offline
+      unmount_volumes: true
+      name: "{{ aggr_name }}"
+      hostname: "{{ cluster }}"
+      username: "{{ netapp_username }}"
+      password: "{{ netapp_password }}"
+      https: true
+      validate_certs: false

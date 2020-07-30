@@ -1,0 +1,20 @@
+- hosts: localhost
+  name: ONTAP
+  gather_facts: false
+  collections:
+    - netapp.ontap
+  tasks:
+  - name: Create Volume snapmirror
+    na_ontap_snapmirror:
+      state: present
+      source_volume: "{{src_volname}}"
+      source_vserver: "{{src_svm}}"
+      destination_volume: "{{dr_volname}}"
+      destination_vserver: "{{dr_svm}}"
+      schedule: hourly
+      policy: MirrorAllSnapshots
+      hostname: "{{ dr_cluster }}"
+      username: "{{ netapp_username }}"
+      password: "{{ netapp_password }}"
+      https: true
+      validate_certs: false

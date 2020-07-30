@@ -1,0 +1,45 @@
+- hosts: localhost
+  name: ONTAP
+  gather_facts: false
+  collections:
+    - netapp.ontap
+  tasks:
+  - name: Create the Export Policy
+    na_ontap_export_policy:
+      state: present
+      name: "{{ dr_volname }}"
+      vserver: "{{ dr_svm }}"
+      hostname: "{{ dr_cluster }}"
+      username: "{{ netapp_username }}"
+      password: "{{ netapp_password }}"
+      https: true
+      validate_certs: false
+  - name: Create Export rules 
+    na_ontap_export_policy_rule:
+      state: present
+      policy_name: "{{ dr_volname }}"
+      vserver: "{{ dr_svm }}"
+      client_match: "{{ client_match }}"
+      ro_rule: any
+      rw_rule: any
+      super_user_security: any 
+      hostname: "{{ dr_cluster }}"
+      username: "{{ netapp_username }}"
+      password: "{{ netapp_password }}"
+      https: true
+      validate_certs: false
+  - name: "Create Volume {{ dr_volname }}"
+    na_ontap_volume:
+      state: present
+      name: "{{ dr_volname }}"
+      size: "{{ volsize }}"
+      size_unit: "gb"
+      aggregate_name: "{{dr_aggrname }}"
+      type: DP
+      vserver: "{{ dr_svm }}"
+      hostname: "{{ dr_cluster }}"
+      username: "{{ netapp_username }}"
+      password: "{{ netapp_password }}"
+      https: true
+      validate_certs: false
+
