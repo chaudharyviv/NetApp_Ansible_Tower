@@ -1,0 +1,23 @@
+- hosts: localhost
+  name: ONTAP
+  gather_facts: false
+  collections:
+    - netapp.ontap
+  tasks:
+  - name: "Create Volume {{ src_volname }}"
+    na_ontap_volume:
+      state: present
+      name: "{{ src_volname }}"
+      size: "{{ volsize }}"
+      size_unit: "gb"
+      space_guarantee: none
+      aggregate_name: "{{ src_aggrname }}"
+      vserver: "{{ src_svm }}"
+      junction_path: "/{{ src_volname }}"
+      volume_security_style: unix
+      policy: default
+      hostname: "{{ src_cluster }}"
+      username: "{{ netapp_username }}"
+      password: "{{ netapp_password }}"
+      https: true
+      validate_certs: false

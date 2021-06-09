@@ -1,0 +1,40 @@
+- hosts: localhost
+  name: Create VM
+  gather_facts: false
+  collections:
+    - netapp.ontap
+  tasks:
+  - name: Creation of VM
+    vmware_guest:
+      state: poweredon
+      hostname: '{{ vcenter_hostname }}'
+      username: '{{ vcenter_username }}'
+      password: '{{ vcenter_password }}'
+      esxi_hostname: "{{ esxihost }}"
+      datacenter: '{{ vcenter_datacenter }}'
+      folder: /Prod_VMs
+      name: '{{ vmhostname }}'
+      guest_id: '{{ guest_id }}'
+      annotation: Created through ansible
+      disk:
+      - size_gb: 50
+        type: thin
+        datastore: 'ds_{{ src_volname }}'
+      networks:
+      - name: VM Network
+        ip: '{{ guest_ip }}'
+        netmask: '{{ guest_netmask }}'
+        gateway: '{{ guest_gateway }}'
+        dns_servers:
+        - '{{ guest_dns_server }}'
+      hardware:
+        memory_mb: '{{ guest_memory }}'
+        num_cpus: '{{ guest_vcpu }}'
+      customization:
+        dns_servers:
+        - '{{ guest_dns_server }}'
+        domain : '{{ guest_domain_name }}'
+        hostname: '{{ vmhostname }}'
+      template: '{{ guest_template }}'
+      wait_for_ip_address: yes
+

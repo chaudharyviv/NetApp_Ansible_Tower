@@ -1,0 +1,18 @@
+- hosts: localhost
+  name: ONTAP
+  gather_facts: false
+  collections:
+    - netapp.ontap
+  tasks:
+  - name: Mount NFS Datastores to ESXi Host '{{ esxihost }}'
+    vmware_host_datastore:
+      state: present
+      hostname: '{{ vcenter_hostname }}'
+      username: '{{ vcenter_username }}'
+      password: '{{ vcenter_password }}'
+      datastore_name: 'ds_{{ src_volname }}'
+      datastore_type: nfs
+      nfs_server: '{{ src_lifaddress }}'
+      nfs_path: '/{{ src_volname }}'
+      nfs_ro: no
+      esxi_hostname: "{{ esxihost }}"      
